@@ -108,147 +108,140 @@ function TransactionForm({ transaction, onSuccess, onCancel }) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-      <h2 className="text-xl font-bold text-gray-800 mb-4">
-        {isEditing ? 'Edit Transaction' : 'Add New Transaction'}
-      </h2>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Description */}
+    <section className="glass-panel p-8">
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Description *
-          </label>
-          <input
-            type="text"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            className={`w-full px-3 py-2 border rounded-md ${
-              formErrors.description ? 'border-red-500' : 'border-gray-300'
-            }`}
-            placeholder="Enter description"
-          />
-          {formErrors.description && (
-            <p className="text-red-500 text-sm mt-1">{formErrors.description}</p>
-          )}
+          <p className="text-xs uppercase tracking-[0.4em] text-slate-400">{isEditing ? 'Update Entry' : 'Log entry'}</p>
+          <h2 className="text-3xl font-semibold text-white mt-3">
+            {isEditing ? 'Tune transaction parameters' : 'Add a new data point'}
+          </h2>
+          <p className="text-slate-400 text-sm mt-2">
+            Provide precise numbers to keep the dashboard telemetry in sync.
+          </p>
         </div>
+        {onCancel && (
+          <button type="button" onClick={onCancel} className="neon-outline whitespace-nowrap">
+            Cancel
+          </button>
+        )}
+      </div>
 
-        {/* Amount */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Amount *
-          </label>
-          <input
-            type="number"
-            name="amount"
-            value={formData.amount}
-            onChange={handleChange}
-            step="0.01"
-            min="0.01"
-            className={`w-full px-3 py-2 border rounded-md ${
-              formErrors.amount ? 'border-red-500' : 'border-gray-300'
-            }`}
-            placeholder="0.00"
-          />
-          {formErrors.amount && (
-            <p className="text-red-500 text-sm mt-1">{formErrors.amount}</p>
-          )}
-        </div>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {/* Description */}
+          <div className="space-y-2">
+            <label className="text-xs uppercase tracking-[0.3em] text-slate-400">Description *</label>
+            <input
+              type="text"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              className={`w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-sky-400 ${
+                formErrors.description ? 'border-red-500/70' : ''
+              }`}
+              placeholder="e.g., Salary drop, Rent pulse"
+            />
+            {formErrors.description && (
+              <p className="text-red-400 text-sm">{formErrors.description}</p>
+            )}
+          </div>
 
-        {/* Type */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Type *
-          </label>
-          <div className="flex gap-4">
-            <label className="flex items-center">
-              <input
-                type="radio"
-                name="type"
-                value="INCOME"
-                checked={formData.type === 'INCOME'}
-                onChange={handleChange}
-                className="mr-2"
-              />
-              <span className="text-green-600 font-medium">Income</span>
-            </label>
-            <label className="flex items-center">
-              <input
-                type="radio"
-                name="type"
-                value="EXPENSE"
-                checked={formData.type === 'EXPENSE'}
-                onChange={handleChange}
-                className="mr-2"
-              />
-              <span className="text-red-600 font-medium">Expense</span>
-            </label>
+          {/* Amount */}
+          <div className="space-y-2">
+            <label className="text-xs uppercase tracking-[0.3em] text-slate-400">Amount *</label>
+            <input
+              type="number"
+              name="amount"
+              value={formData.amount}
+              onChange={handleChange}
+              step="0.01"
+              min="0.01"
+              className={`w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-emerald-400 ${
+                formErrors.amount ? 'border-red-500/70' : ''
+              }`}
+              placeholder="0.00"
+            />
+            {formErrors.amount && (
+              <p className="text-red-400 text-sm">{formErrors.amount}</p>
+            )}
+          </div>
+
+          {/* Type */}
+          <div className="space-y-2">
+            <label className="text-xs uppercase tracking-[0.3em] text-slate-400">Type *</label>
+            <div className="grid grid-cols-2 gap-3">
+              {[{
+                label: 'Income',
+                value: 'INCOME',
+                accent: 'from-emerald-400 to-sky-400',
+              }, {
+                label: 'Expense',
+                value: 'EXPENSE',
+                accent: 'from-rose-400 to-fuchsia-500',
+              }].map((option) => (
+                <label key={option.value} className={`rounded-2xl border border-white/15 px-4 py-3 cursor-pointer transition-colors ${
+                  formData.type === option.value ? 'bg-gradient-to-r text-white ' + option.accent : 'bg-white/5 text-slate-300'
+                }`}>
+                  <input
+                    type="radio"
+                    name="type"
+                    value={option.value}
+                    checked={formData.type === option.value}
+                    onChange={handleChange}
+                    className="hidden"
+                  />
+                  <div className="text-sm font-semibold tracking-wide text-center">
+                    {option.label}
+                  </div>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Date */}
+          <div className="space-y-2">
+            <label className="text-xs uppercase tracking-[0.3em] text-slate-400">Date *</label>
+            <input
+              type="date"
+              name="date"
+              value={formData.date}
+              onChange={handleChange}
+              className={`w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-3 text-white focus:outline-none focus:border-indigo-400 ${
+                formErrors.date ? 'border-red-500/70' : ''
+              }`}
+            />
+            {formErrors.date && (
+              <p className="text-red-400 text-sm">{formErrors.date}</p>
+            )}
+          </div>
+
+          {/* Category */}
+          <div className="space-y-2 md:col-span-2">
+            <label className="text-xs uppercase tracking-[0.3em] text-slate-400">Category (optional)</label>
+            <input
+              type="text"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className="w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-purple-400"
+              placeholder="Food, Utilities, Freelance, etc."
+            />
           </div>
         </div>
 
-        {/* Date */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Date *
-          </label>
-          <input
-            type="date"
-            name="date"
-            value={formData.date}
-            onChange={handleChange}
-            className={`w-full px-3 py-2 border rounded-md ${
-              formErrors.date ? 'border-red-500' : 'border-gray-300'
-            }`}
-          />
-          {formErrors.date && (
-            <p className="text-red-500 text-sm mt-1">{formErrors.date}</p>
-          )}
-        </div>
-
-        {/* Category */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Category (Optional)
-          </label>
-          <input
-            type="text"
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
-            placeholder="e.g., Food, Salary, Rent"
-          />
-        </div>
-
-        {/* Error Message */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+          <div className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
             {error}
           </div>
         )}
 
-        {/* Buttons */}
-        <div className="flex gap-3">
-          <button
-            type="submit"
-            disabled={loading}
-            className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-          >
-            {loading ? 'Saving...' : isEditing ? 'Update' : 'Add Transaction'}
+        <div className="flex flex-col md:flex-row gap-3">
+          <button type="submit" disabled={loading} className="neon-button text-center">
+            {loading ? 'Syncing...' : isEditing ? 'Update transaction' : 'Add transaction'}
           </button>
-          {onCancel && (
-            <button
-              type="button"
-              onClick={onCancel}
-              className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
-            >
-              Cancel
-            </button>
-          )}
         </div>
       </form>
-    </div>
+    </section>
   );
 }
 

@@ -2,53 +2,54 @@ import { formatCurrency, formatDate } from '../utils/formatters';
 
 function TransactionItem({ transaction, onEdit, onDelete }) {
   const isIncome = transaction.type === 'INCOME';
-  const amountColor = isIncome ? 'text-green-600' : 'text-red-600';
-  const typeBadgeColor = isIncome 
-    ? 'bg-green-100 text-green-800' 
-    : 'bg-red-100 text-red-800';
+  const gradient = isIncome
+    ? 'from-emerald-400/80 via-sky-400/70 to-blue-400/60'
+    : 'from-rose-500/80 via-fuchsia-500/70 to-purple-500/60';
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-200 hover:shadow-md transition-shadow">
-      <div className="flex justify-between items-start">
-        <div className="flex-1">
-          <div className="flex items-center gap-3 mb-2">
-            <h3 className="text-lg font-semibold text-gray-800">
+    <article className="relative rounded-3xl p-[1px] bg-gradient-to-r from-white/30 via-white/5 to-transparent hover:scale-[1.01] transition-transform">
+      <div className="glass-panel px-6 py-5 flex flex-col md:flex-row gap-4">
+        <div className="flex-1 space-y-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <h3 className="text-xl font-semibold text-white">
               {transaction.description}
             </h3>
-            <span className={`px-2 py-1 rounded text-xs font-medium ${typeBadgeColor}`}>
+            <span className={`px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r ${gradient}`}>
               {transaction.type}
             </span>
-          </div>
-          
-          <div className="flex items-center gap-4 text-sm text-gray-600">
-            <span className={`text-xl font-bold ${amountColor}`}>
-              {isIncome ? '+' : '-'}{formatCurrency(transaction.amount)}
-            </span>
-            <span>{formatDate(transaction.date)}</span>
             {transaction.category && (
-              <span className="px-2 py-1 bg-gray-100 rounded text-xs">
+              <span className="text-xs uppercase tracking-[0.3em] text-slate-400 border border-white/10 rounded-full px-3 py-1">
                 {transaction.category}
               </span>
             )}
           </div>
+
+          <div className="flex flex-wrap items-center gap-6 text-sm text-slate-300">
+            <span className="text-2xl font-semibold text-white">
+              {isIncome ? '+' : '-'}{formatCurrency(transaction.amount)}
+            </span>
+            <span>{formatDate(transaction.date)}</span>
+          </div>
         </div>
 
-        <div className="flex gap-2 ml-4">
+        <div className="flex gap-3 self-start md:self-center">
           <button
             onClick={() => onEdit(transaction)}
-            className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors"
+            className="rounded-full border border-white/20 p-2 text-sky-200 hover:border-sky-400/60 hover:text-white"
+            aria-label="Edit transaction"
           >
-            Edit
+            ✎
           </button>
           <button
             onClick={() => onDelete(transaction.id)}
-            className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors"
+            className="rounded-full border border-white/20 p-2 text-rose-200 hover:border-rose-400/60 hover:text-white"
+            aria-label="Delete transaction"
           >
-            Delete
+            ✕
           </button>
         </div>
       </div>
-    </div>
+    </article>
   );
 }
 
